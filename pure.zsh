@@ -186,13 +186,15 @@ prompt_pure_preprompt_render() {
 	local expanded_prompt
 	expanded_prompt="${(S%%)PROMPT}"
 
-	if [[ $1 == precmd ]]; then
-		# Initial newline, for spaciousness.
-		print
-	elif [[ $prompt_pure_last_prompt != $expanded_prompt ]]; then
-		# Redraw the prompt.
-		prompt_pure_reset_prompt
-	fi
+    #MO: uncomment this to get pretty spacing back
+    #MO: Comment out if you want spaces between each prompt
+	#MO: if [[ $1 == precmd ]]; then
+	#MO: 	# Initial newline, for spaciousness.
+	#MO: 	print
+	#MO: elif [[ $prompt_pure_last_prompt != $expanded_prompt ]]; then
+	#MO: 	# Redraw the prompt.
+	#MO: 	prompt_pure_reset_prompt
+	#MO: fi
 
 	typeset -g prompt_pure_last_prompt=$expanded_prompt
 }
@@ -831,7 +833,10 @@ prompt_pure_setup() {
 		suspended_jobs       red
 		user                 242
 		user:root            default
-		virtualenv           242
+		# virtualenv           242
+        # MO: wanted to have it displayed in white for readability
+        # MO: deelte belwo and uncomment 242 line above to get original grey
+		virtualenv           default
 	)
 	prompt_pure_colors=("${(@kv)prompt_pure_colors_default}")
 
@@ -849,7 +854,14 @@ prompt_pure_setup() {
 	fi
 
 	# If a virtualenv is activated, display it in grey.
-	PROMPT='%(12V.%F{$prompt_pure_colors[virtualenv]}%12v%f .)'
+    # MO: the additional paraens are to give virtualenv the vanilla parentheses
+    # MO: to differentiate it from git branches
+    # MO:         |                                         |
+    # MO:         |                                         |
+    # MO:         V                                         V
+    PROMPT='%(12V.(%F{$prompt_pure_colors[virtualenv]}%12v%f) .)'
+    # Original:
+	# PROMPT='%(12V.%F{$prompt_pure_colors[virtualenv]}%12v%f .)'
 
 	# Prompt turns red if the previous command didn't exit with 0.
 	local prompt_indicator='%(?.%F{$prompt_pure_colors[prompt:success]}.%F{$prompt_pure_colors[prompt:error]})${prompt_pure_state[prompt]}%f '
